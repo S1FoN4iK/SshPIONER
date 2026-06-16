@@ -6,7 +6,7 @@ import logging
 from .bot import VideoSender
 from .config import Settings
 from .state import State
-from .tiktok import Downloader, normalize_username
+from .media import Downloader, normalize_username
 
 logger = logging.getLogger(__name__)
 

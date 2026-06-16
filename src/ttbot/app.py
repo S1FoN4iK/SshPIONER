@@ -9,9 +9,9 @@ from aiogram.exceptions import TelegramUnauthorizedError
 
 from .bot import VideoSender, build_router
 from .config import Settings
+from .media import build_downloader
 from .poller import Poller
 from .state import State
-from .tiktok import build_downloader
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +23,13 @@ async def run() -> None:
     )
     settings = Settings()
 
+    proxy = settings.proxy_url or None
+    if proxy:
+        logger.info("using proxy for outbound requests")
     client = httpx.AsyncClient(
-        follow_redirects=True, headers={"User-Agent": "tiktok-tg-bot"}
+        follow_redirects=True,
+        headers={"User-Agent": "media-tg-bot"},
+        proxy=proxy,
     )
     downloader = build_downloader(settings, client)
     state = State(settings.state_file)
