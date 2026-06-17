@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -14,6 +15,13 @@ class Settings(BaseSettings):
     bot_token: str
     target_chat_id: int | None = None
     allowed_chat_ids: str = ""
+
+    @field_validator("target_chat_id", mode="before")
+    @classmethod
+    def _blank_to_none(cls, v: object) -> object:
+        if isinstance(v, str) and not v.strip():
+            return None
+        return v
 
     # --- Polling (TikTok profiles only) ---
     tiktok_profiles: str = ""

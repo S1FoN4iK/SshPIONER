@@ -29,9 +29,11 @@ uv sync
 Для слежения за профилями нужны одновременно `TARGET_CHAT_ID` и `TIKTOK_PROFILES`.
 
 ### Прокси
-При необходимости заполните `PROXY_URL` — и **весь** исходящий трафик (tikwm + yt-dlp) пойдёт через него.
-Пусто → прямое соединение. `http(s)` и `socks5` работают из коробки
-(`socks` благодаря extra `httpx[socks]`), креды можно зашить в URL:
+Заполните `PROXY_URL` — и **весь** трафик приложения пойдёт через прокси: и подключение
+к **Telegram** (`api.telegram.org`), и скачивание (tikwm + yt-dlp). Пусто → прямое соединение.
+
+`http(s)` и `socks5` работают из коробки (extra `httpx[socks]` для скачивания и
+`aiohttp-socks` для Telegram уже в зависимостях), креды зашиваются в URL:
 `http://user:pass@host:port` или `socks5://user:pass@host:1080`.
 
 ### Cookies (для Instagram / возрастных видео)

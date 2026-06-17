@@ -5,6 +5,7 @@ import logging
 
 import httpx
 from aiogram import Bot, Dispatcher
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramUnauthorizedError
 
 from .bot import VideoSender, build_router
@@ -25,7 +26,7 @@ async def run() -> None:
 
     proxy = settings.proxy_url or None
     if proxy:
-        logger.info("using proxy for outbound requests")
+        logger.info("routing all traffic (Telegram + downloads) through proxy")
     client = httpx.AsyncClient(
         follow_redirects=True,
         headers={"User-Agent": "media-tg-bot"},
@@ -34,7 +35,8 @@ async def run() -> None:
     downloader = build_downloader(settings, client)
     state = State(settings.state_file)
 
-    bot = Bot(token=settings.bot_token)
+    session = AiohttpSession(proxy=proxy) if proxy else None
+    bot = Bot(token=settings.bot_token, session=session)
     dp = Dispatcher()
     sender = VideoSender(bot, settings, downloader)
     dp.include_router(build_router(settings, sender))
